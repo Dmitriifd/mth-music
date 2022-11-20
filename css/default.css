@@ -16,11 +16,12 @@ body {
   line-height: 1.2;
   background: #eeb23d url('./../img/bg.jpg') no-repeat center / cover;
   background-attachment: fixed;
+	padding-bottom: 172px;
 }
 
 img,
 svg {
-	min-width: 100%;
+	max-width: 100%;
   max-height: 100%;
 	height: auto;
 }
