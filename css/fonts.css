@@ -1,0 +1,29 @@
+@font-face {
+  font-family: "SF UI Display";
+  font-stile: normal;
+  font-weight: 300;
+  font-display: swap;
+  src:
+      url("../fonts/SFUIDisplay-Light.woff2") format("woff2"),
+      url("../fonts/SFUIDisplay-Light.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SF UI Display";
+  font-stile: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+      url("../fonts/SFUIDisplay-Regular.woff2") format("woff2"),
+      url("../fonts/SFUIDisplay-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SF UI Display";
+  font-stile: normal;
+  font-weight: 600;
+  font-display: swap;
+  src:
+      url("../fonts/SFUIDisplay-Semibold.woff2") format("woff2"),
+      url("../fonts/SFUIDisplay-Semibold.woff") format("woff");
+}
