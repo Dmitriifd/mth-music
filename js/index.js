@@ -94,6 +94,9 @@ const likeBtn = document.querySelector('.player__controller-like');
 const muteBtn = document.querySelector('.player__controller-mute');
 const player = document.querySelector('.player');
 const catalogContainer = document.querySelector('.catalog__container');
+const playerProgressInput = document.querySelector('.player__progress-input');
+const playerTimePassed  = document.querySelector('.player__time-passed');
+const playerTimeTotal = document.querySelector('.player__time-total');
 
 const audio = new Audio();
 
@@ -204,6 +207,23 @@ const checkCount = (catalogAddBtn, i = 1) => {
 	}
 };
 
+const updateTime = () => {
+	const duration = audio.duration;
+	const currentTime = audio.currentTime;
+	const progress = (currentTime / duration) * playerProgressInput.max;
+
+	playerProgressInput.value = progress ? progress : 0;
+
+	const minutesPassed = Math.floor(currentTime / 60) || '0';
+	const secondsPassed = Math.floor(currentTime % 60) || '0';
+
+	const minutesDuration = Math.floor(duration / 60) || '0';
+	const secondsDuration = Math.floor(duration % 60) || '0';
+
+	playerTimePassed.textContent = `${minutesPassed}:${secondsPassed < 10 ? '0' + secondsPassed : secondsPassed}`;
+	playerTimeTotal.textContent = `${minutesDuration}:${secondsDuration < 10 ? '0' + secondsDuration : secondsDuration}`;
+};
+
 const init = () => {
 	renderCatalog(dataMusic);
 	checkCount(catalogAddBtn);
@@ -215,6 +235,11 @@ const init = () => {
 	});
 	prevBtn.addEventListener('click', playMusic);
 	nextBtn.addEventListener('click', playMusic);
+  audio.addEventListener('timeupdate', updateTime);
+  playerProgressInput.addEventListener('input', () => {
+    const progress = playerProgressInput.value;
+		audio.currentTime = (progress / playerProgressInput.max) * audio.duration;
+  })
 };
 
 init();
