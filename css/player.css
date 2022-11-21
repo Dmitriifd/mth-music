@@ -51,6 +51,9 @@
 .player__icon--like {
 	background-image: url('../icons/like.svg');
 }
+.player__icon-like--active {
+	filter: drop-shadow(0 0 2px tomato);
+}
 .player__progress-wrap {
 	display: flex;
 	align-items: center;

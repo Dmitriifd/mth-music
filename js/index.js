@@ -85,6 +85,10 @@ const dataMusic = [
 	},
 ];
 
+let playList = [];
+
+const favoriteList = localStorage.getItem('favorite') ? JSON.parse(localStorage.getItem('favorite')) : [];
+
 const tracksCard = document.getElementsByClassName('track');
 const pauseBtn = document.querySelector('.player__controller-pause');
 const stopBtn = document.querySelector('.player__controller-stop');
@@ -92,11 +96,13 @@ const prevBtn = document.querySelector('.player__controller-prev');
 const nextBtn = document.querySelector('.player__controller-next');
 const likeBtn = document.querySelector('.player__controller-like');
 const muteBtn = document.querySelector('.player__controller-mute');
+const playerVolumeInput = document.querySelector('.player__volume-input');
 const player = document.querySelector('.player');
 const catalogContainer = document.querySelector('.catalog__container');
 const playerProgressInput = document.querySelector('.player__progress-input');
 const playerTimePassed = document.querySelector('.player__time-passed');
 const playerTimeTotal = document.querySelector('.player__time-total');
+const favoriteBtn = document.querySelector('.header__favorite-btn');
 
 const audio = new Audio();
 
@@ -133,6 +139,15 @@ const playMusic = (e) => {
 
 	let i = 0;
 	const id = trackActive.dataset.idTrack;
+
+	const index = favoriteList.indexOf(id);
+
+	if (index !== -1) {
+		likeBtn.classList.add('player__icon-like--active');
+	} else {
+		likeBtn.classList.remove('player__icon-like--active');
+	}
+
 	const track = dataMusic.find((item, index) => {
 		i = index;
 		return id === item.id;
@@ -143,10 +158,11 @@ const playMusic = (e) => {
 	pauseBtn.classList.remove('player__icon--play');
 	player.classList.add('player--active');
 
-	const prevTrack = i === 0 ? dataMusic.length - 1 : i - 1;
-	const nextTrack = i + 1 === dataMusic.length ? 0 : i + 1;
-	prevBtn.dataset.idTrack = dataMusic[prevTrack].id;
-	nextBtn.dataset.idTrack = dataMusic[nextTrack].id;
+	const prevTrack = i === 0 ? playList.length - 1 : i - 1;
+	const nextTrack = i + 1 === playList.length ? 0 : i + 1;
+	prevBtn.dataset.idTrack = playList[prevTrack].id;
+	nextBtn.dataset.idTrack = playList[nextTrack].id;
+	likeBtn.dataset.idTrack = id;
 
 	for (let i = 0; i < tracksCard.length; i++) {
 		if (id === tracksCard[i].dataset.idTrack) {
@@ -167,7 +183,7 @@ pauseBtn.addEventListener('click', (e) => pausePlayer);
 stopBtn.addEventListener('click', (e) => {
 	audio.src = '';
 	player.classList.remove('player--active');
-  document.querySelector('.track--active').classList.remove('track--active');
+	document.querySelector('.track--active').classList.remove('track--active');
 });
 
 const createCard = ({ artist, track, id, poster }) => {
@@ -194,6 +210,7 @@ const createCard = ({ artist, track, id, poster }) => {
 };
 
 const renderCatalog = (dataList) => {
+	playList = [...dataList];
 	catalogContainer.textContent = '';
 	const listCards = dataList.map(createCard);
 	catalogContainer.append(...listCards);
@@ -229,8 +246,12 @@ const updateTime = () => {
 };
 
 const init = () => {
+  audio.volume = localStorage.getItem('volume') || 1;
+  playerVolumeInput.value = audio.volume * 100;
+
 	renderCatalog(dataMusic);
 	checkCount(catalogAddBtn);
+
 	catalogAddBtn.addEventListener('click', () => {
 		Array.from(tracksCard).forEach((trackCard) => {
 			trackCard.style.display = '';
@@ -240,15 +261,49 @@ const init = () => {
 	prevBtn.addEventListener('click', playMusic);
 	nextBtn.addEventListener('click', playMusic);
 	audio.addEventListener('timeupdate', updateTime);
-  audio.addEventListener('ended', () => {
-    nextBtn.dispatchEvent(new Event('click', {bubbles:  true}));
-  })
+	audio.addEventListener('ended', () => {
+		nextBtn.dispatchEvent(new Event('click', { bubbles: true }));
+	});
 	playerProgressInput.addEventListener('input', () => {
 		const progress = playerProgressInput.value;
 		audio.currentTime = (progress / playerProgressInput.max) * audio.duration;
 	});
+	likeBtn.addEventListener('click', () => {
+		const index = favoriteList.indexOf(likeBtn.dataset.idTrack);
 
+		if (index === -1) {
+			favoriteList.push(likeBtn.dataset.idTrack);
+			likeBtn.classList.add('player__icon-like--active');
+		} else {
+			favoriteList.splice(index, 1);
+			likeBtn.classList.remove('player__icon-like--active');
+		}
 
+		localStorage.setItem('favorite', JSON.stringify(favoriteList));
+	});
+	favoriteBtn.addEventListener('click', () => {
+		const data = dataMusic.filter((item) => favoriteList.includes(item.id));
+		renderCatalog(data);
+	});
+
+  playerVolumeInput.addEventListener('input', () => {
+    const value = playerVolumeInput.value;
+    audio.volume = value / 100;
+  })
+
+  muteBtn.addEventListener('click', () => {
+    if (audio.volume) {
+      localStorage.setItem('volume', audio.volume)
+      audio.volume = 0;
+      playerVolumeInput.value = 0;
+      muteBtn.classList.add('player__icon--mute-off');
+    } else {
+      muteBtn.classList.remove('player__icon--mute-off');
+      audio.volume = localStorage.getItem('volume');
+			playerVolumeInput.value = audio.volume * 100;
+    }
+  })
+  playerVolumeInput
 };
 
 init();
