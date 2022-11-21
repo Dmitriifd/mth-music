@@ -95,7 +95,7 @@ const muteBtn = document.querySelector('.player__controller-mute');
 const player = document.querySelector('.player');
 const catalogContainer = document.querySelector('.catalog__container');
 const playerProgressInput = document.querySelector('.player__progress-input');
-const playerTimePassed  = document.querySelector('.player__time-passed');
+const playerTimePassed = document.querySelector('.player__time-passed');
 const playerTimeTotal = document.querySelector('.player__time-total');
 
 const audio = new Audio();
@@ -148,10 +148,13 @@ const playMusic = (e) => {
 	prevBtn.dataset.idTrack = dataMusic[prevTrack].id;
 	nextBtn.dataset.idTrack = dataMusic[nextTrack].id;
 
-	Array.from(tracksCard).forEach((track) => {
-		track.classList.remove('track--active');
-	});
-	trackActive.classList.add('track--active');
+	for (let i = 0; i < tracksCard.length; i++) {
+		if (id === tracksCard[i].dataset.idTrack) {
+			tracksCard[i].classList.add('track--active');
+		} else {
+			tracksCard[i].classList.remove('track--active');
+		}
+	}
 };
 
 const addHandlerTrack = () => {
@@ -235,11 +238,11 @@ const init = () => {
 	});
 	prevBtn.addEventListener('click', playMusic);
 	nextBtn.addEventListener('click', playMusic);
-  audio.addEventListener('timeupdate', updateTime);
-  playerProgressInput.addEventListener('input', () => {
-    const progress = playerProgressInput.value;
+	audio.addEventListener('timeupdate', updateTime);
+	playerProgressInput.addEventListener('input', () => {
+		const progress = playerProgressInput.value;
 		audio.currentTime = (progress / playerProgressInput.max) * audio.duration;
-  })
+	});
 };
 
 init();
