@@ -143,6 +143,10 @@
 	background-image: url('../icons/volume-off.svg');
 }
 
+.player__icon:not(.player__icon--like):active {
+  background-color: rgb(255 255 255 / 70%);
+}
+
 @media (max-width: 1024px) {
 	.player__container {
 		grid-template-columns: 1fr 1fr 2fr 1fr;
