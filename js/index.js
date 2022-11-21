@@ -234,7 +234,7 @@
 		e.preventDefault()
 		const trackActive = e.currentTarget
 
-		if (trackActive.classList.contains('track_active')) {
+		if (trackActive.classList.contains('track--active')) {
 			pausePlayer()
 			return
 		}
@@ -254,12 +254,14 @@
 			i = index
 			return id === item.id
 		})
+    
 		audio.src = track.mp3
 
 		trackInfoTitle.textContent = track.track
 		trackInfoArtist.textContent = track.artist
 
 		audio.play()
+
 		pauseBtn.classList.remove('player__icon--play')
 		player.classList.add('player--active')
 		player.dataset.idTrack = id
@@ -287,7 +289,9 @@
 
 	const createCard = ({ artist, track, id, poster }) => {
 		const card = document.createElement('a')
+    card.href = '#'
 		card.classList.add('catalog__item', 'track')
+
 		if (player.dataset.idTrack === id) {
 			card.classList.add('track--active')
 			if (audio.paused) {
@@ -295,7 +299,7 @@
 			}
 		}
 		card.dataset.idTrack = id
-		card.href = '#'
+		
 		card.innerHTML = `
     <div class="track__img-wrap">
       <img
@@ -379,9 +383,9 @@
 			nextBtn.dispatchEvent(new Event('click', { bubbles: true }))
 		})
 		audio.addEventListener('timeupdate', updateTime)
-		
 
     pauseBtn.addEventListener('click', pausePlayer)
+    
     stopBtn.addEventListener('click', () => {
       audio.src = ''
       player.classList.remove('player--active')
