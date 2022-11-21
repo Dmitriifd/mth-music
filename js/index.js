@@ -167,6 +167,7 @@ pauseBtn.addEventListener('click', (e) => pausePlayer);
 stopBtn.addEventListener('click', (e) => {
 	audio.src = '';
 	player.classList.remove('player--active');
+  document.querySelector('.track--active').classList.remove('track--active');
 });
 
 const createCard = ({ artist, track, id, poster }) => {
@@ -239,10 +240,15 @@ const init = () => {
 	prevBtn.addEventListener('click', playMusic);
 	nextBtn.addEventListener('click', playMusic);
 	audio.addEventListener('timeupdate', updateTime);
+  audio.addEventListener('ended', () => {
+    nextBtn.dispatchEvent(new Event('click', {bubbles:  true}));
+  })
 	playerProgressInput.addEventListener('input', () => {
 		const progress = playerProgressInput.value;
 		audio.currentTime = (progress / playerProgressInput.max) * audio.duration;
 	});
+
+
 };
 
 init();
